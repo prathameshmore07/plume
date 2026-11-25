@@ -6,6 +6,21 @@ Plume is a regression modeling project and Streamlit web application that predic
 
 ---
 
+## Dashboard Previews
+
+The UI automatically adapts its atmospheric backdrop and city-month pollutant defaults based on Indian seasonal patterns and predicted AQI severity.
+
+### Severe Winter Smog (Delhi, November)
+![Plume Delhi Smog](screenshots/delhi_smog.png)
+
+### Clear & Sunny (Bengaluru, March)
+![Plume Bengaluru Clear](screenshots/bengaluru_clear.png)
+
+### Monsoon Rain Washout (Mumbai, July)
+![Plume Mumbai Monsoon](screenshots/mumbai_monsoon.png)
+
+---
+
 ## Dataset
 - **Source:** Air Quality Data in India (2015–2020) — `city_day.csv` (CPCB / Kaggle)
 - **Raw Records:** 29,531 daily observations across 26 Indian cities (`2015-01-01` to `2020-07-01`)
@@ -46,15 +61,21 @@ Random Forest Regressor reduces RMSE by **28.1%** compared to Linear Regression 
 ```text
 plume-aqi/
 ├── .streamlit/
-│   └── config.toml                # Light theme configuration
+│   └── config.toml                # Dark theme configuration
 ├── data/
 │   └── city_day.csv               # Kaggle CPCB dataset
-├── notebooks/
-│   └── plume_aqi.ipynb            # EDA, preprocessing, training & evaluation
 ├── models/
 │   ├── best_aqi_model.joblib      # Trained Random Forest Regressor
 │   └── metadata.joblib            # Cities, medians, feature list & metrics
+├── notebooks/
+│   └── plume_aqi.ipynb            # EDA, preprocessing, training & evaluation
+├── plots/                         # EDA and model evaluation plots
+├── screenshots/                   # Streamlit dashboard previews
+│   ├── delhi_smog.png
+│   ├── bengaluru_clear.png
+│   └── mumbai_monsoon.png
 ├── app.py                         # Streamlit web application
 ├── requirements.txt               # Python dependencies
 ├── .gitignore
 └── README.md
+```

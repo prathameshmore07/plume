@@ -126,9 +126,17 @@ with st.sidebar:
     )
 
     cities = meta["cities"]
-    delhi_idx = cities.index("Delhi") if "Delhi" in cities else 0
-    selected_city = st.selectbox("City", cities, index=delhi_idx)
-    selected_date = st.date_input("Date", datetime.date.today())
+    qp = st.query_params
+    qp_city = qp.get("city", "Delhi")
+    default_idx = cities.index(qp_city) if qp_city in cities else (cities.index("Delhi") if "Delhi" in cities else 0)
+    default_date = datetime.date.today()
+    if "date" in qp:
+        try:
+            default_date = datetime.date.fromisoformat(qp["date"])
+        except ValueError:
+            pass
+    selected_city = st.selectbox("City", cities, index=default_idx)
+    selected_date = st.date_input("Date", default_date)
 
     # Auto-load historical city + month medians whenever city or month changes
     current_ctx = (selected_city, selected_date.month)
@@ -360,7 +368,7 @@ render_html(
             border: 1px solid rgba(255, 255, 255, 0.14);
             border-radius: 16px;
             padding: 1.5rem;
-            min-height: 295px;
+            min-height: 335px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -636,7 +644,7 @@ with st.container(border=True, key="chart_card"):
     render_html(
         """
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-            <span class="card-eyebrow" style="font-size: 0.76rem; color: rgba(255,255,255,0.75);">Pollutant Concentrations (µg/m³)</span>
+            <span class="card-eyebrow" style="font-size: 0.76rem; color: rgba(255,255,255,0.75);">Pollutant Concentrations <span style="text-transform: none;">(µg/m³)</span></span>
             <span style="font-size: 0.72rem; color: rgba(255,255,255,0.55);">
                 <span style="color:#38BDF8;">●</span> Within limit &nbsp;&nbsp;
                 <span style="color:#F87171;">●</span> Exceeds CPCB standard
@@ -660,7 +668,7 @@ with st.container(border=True, key="chart_card"):
         alt.Chart(chart_df)
         .mark_bar(cornerRadiusTopLeft=5, cornerRadiusTopRight=5, width=44)
         .encode(
-            x=alt.X("Pollutant:N", sort=None, axis=alt.Axis(labelColor="#E2E8F0", title=None, labelFontSize=12, labelFontWeight="bold")),
+            x=alt.X("Pollutant:N", sort=None, axis=alt.Axis(labelColor="#E2E8F0", title=None, labelFontSize=12, labelFontWeight="bold", labelAngle=0)),
             y=alt.Y("Level:Q", scale=alt.Scale(domain=[0, y_max]), axis=alt.Axis(labelColor="#94A3B8", title=None, gridColor="rgba(255,255,255,0.06)")),
             color=alt.condition(
                 alt.datum.Exceeded,
